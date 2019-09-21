@@ -4,20 +4,19 @@ using Xunit;
 namespace GradeBook.Tests
 {
     public delegate string WriteLogDelegate(string logMessage);
-    public class TypeTests  // type tests, how do reference types behave, how do value types behave? 
+    public class TypeTests  
     
     {
         int count = 0;
         [Fact]
         public void WriteLogDelegateCanPointToMethod()
         {
-            WriteLogDelegate log = ReturnMessage; //log é um metodo, metodos sao chamados,  para usar delegates com mais de um metodo eu chamo o primeiro aqui, atribuo algo a variavel do delegate e depois usando += atribuo o outro metodo a ela, pode ser o mesmo metodo outra vez
-           // log = new WriteLogDelegate(ReturnMessage);   igual classe, esse é o jeito "longo" de instancializar um delegate
+            WriteLogDelegate log = ReturnMessage; 
             log += ReturnMessage;
             log+= IncrementCount;
-            var result = log("Hello!");//chamando o metodo
+            var result = log("Hello!");
 
-            Assert.Equal(3, count); //testando quantas vezes os metodos do delegate sao chamados 
+            Assert.Equal(3, count);  
         }
 
         string IncrementCount(string message)
@@ -32,26 +31,26 @@ namespace GradeBook.Tests
         }
 
         [Fact]
-        public void ValueTypesAlsoPassByValue() //TEST 6
+        public void ValueTypesAlsoPassByValue() 
         {
             var x = GetInt();
-            SetInt(ref x); //nao vai alterar x pq c# vai usar pass by value, esse x utilizado é uma copia(a nao ser que se use a keyword ref)
+            SetInt(ref x); 
 
             Assert.Equal(42, x);
         }
 
-        private void SetInt(ref int z)//METHOD 6
+        private void SetInt(ref int z)
         {
             z = 42;
         }
 
-        private int GetInt()//METHOD 5
+        private int GetInt()
         {
             return 3;
         }
 
         [Fact]
-        public void CSharpCanPassByRef() //TEST 5 - 
+        public void CSharpCanPassByRef() 
         {
             var book1 = GetBook("Book 1");
             GetBookSetName(ref book1, "New Name");
@@ -59,13 +58,13 @@ namespace GradeBook.Tests
             Assert.Equal("New Name", book1.Name);
         }
 
-        private void GetBookSetName(ref Book book, string name)//METHOD 4
+        private void GetBookSetName(ref Book book, string name)
         {
             book = new Book(name); 
         }
         
         [Fact]
-        public void CSharpIsPassByValue() //TEST 4 - when I say that book = a new Book, am I writing that value into the book1 variable? Is there a way for this method to reach out and touch my book1 variable? Or am I just making changes to this local parameter? 
+        public void CSharpIsPassByValue() 
         {
             var book1 = GetBook("Book 1");
             GetBookSetName(book1, "New Name");
@@ -73,22 +72,22 @@ namespace GradeBook.Tests
             Assert.Equal("Book 1", book1.Name);
         }
 
-        private void GetBookSetName(Book book, string name)//METHOD 3
+        private void GetBookSetName(Book book, string name)
         {
             book = new Book(name); 
         }
 
         [Fact]
-        public void CanSetNameFromReference() //TEST 3 - check to see if we can change the name of a book and how that happens. 
+        public void CanSetNameFromReference() 
         { 
             var book1 = GetBook("Book 1");
-            SetName(book1, "New Name");//named this test CanSetNameFromReference because what I'm passing to this method is a reference
+            SetName(book1, "New Name");/
             
             Assert.Equal("New Name", book1.Name);
         }
 
         [Fact]
-        public void StringBehaveLikeValueTypes() // TEST 7 
+        public void StringBehaveLikeValueTypes()  
         { 
             string name = "Scott";
             var upper = MakeUppercase(name);
@@ -103,13 +102,13 @@ namespace GradeBook.Tests
             return parameter.ToUpper();
         }
 
-        private void SetName(Book book, string name)//METHOD 2
+        private void SetName(Book book, string name)
         {
             book.Name = name;
         }
 
         [Fact]
-        public void GetBookReturnsDifferentObjects() //TEST 1 - every time I invoke GetBook, I'm creating a new and unique and distinct object in memory
+        public void GetBookReturnsDifferentObjects() /
         {
             var book1 = GetBook("Book 1");
             var book2 = GetBook("Book 2");
@@ -118,19 +117,16 @@ namespace GradeBook.Tests
             Assert.Equal("Book 2", book2.Name);
         }
         [Fact]
-        public void TwoVarsCanReferenceObject() //TEST 2 - Can two different variables reference the same object somehow? 
+        public void TwoVarsCanReferenceObject()  
         {
             var book1 = GetBook("Book 1");
-            var book2 = book1;/*I'm not making a copy of some book object and placing that into the book2 variable.
-             Instead, what this line of code will do is take the value that inside of book1, that value is a pointer, it's a reference,
-              and we're going to copy that value into the book2 variable. So we will have the same pointer value, where a pointer is just
-               some number that's going to lead us to some memory cell that's in our computer. */
+            var book2 = book1;
 
-            Assert.Same(book1, book2); //os pointers sao iguais apenas, as duas variaveis fazem referencia igual para o mesmo objeto
+            Assert.Same(book1, book2); 
             Assert.True(Object.ReferenceEquals(book1, book2));
         }
 
-        Book GetBook(string name)//METHOD 1
+        Book GetBook(string name)
         {
             return new Book(name);
         }
